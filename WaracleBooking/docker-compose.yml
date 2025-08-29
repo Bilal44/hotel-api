@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  waraclebooking:
+    build:
+      context: .
+      dockerfile: WaracleBooking/Dockerfile
+    ports:
+      - "80:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Release
+    image: waraclebooking-img:${BUILD_NUMBER:-latest}
+    container_name: waraclebooking-app

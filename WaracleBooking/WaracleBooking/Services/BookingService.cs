@@ -18,7 +18,7 @@ public class BookingService(
     IRoomRepository roomRepository,
     IBookingRepository bookingRepository,
     IDateTimeSource dateTimeSource,
-    ILogger<IBookingService> logger)
+    ILogger<BookingService> logger)
     : IBookingService
 {
     public async Task<List<Hotel>> GetHotelsByNameAsync(string? name, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ public class BookingService(
         catch (Exception e)
         {
             logger.LogError(
-                "Encounter an error while searching for [{name}]",
+                "Encountered an error while searching for [{name}]",
                 name?.Trim());
 
             throw new ApiException(HttpStatusCode.InternalServerError, e.Message);
@@ -65,7 +65,7 @@ public class BookingService(
         catch (Exception e)
         {
             logger.LogError(
-                "Encounter an error while checking room available for hotel id [{HotelId}] from [{FromDate}] to [{ToDate}]",
+                "Encountered an error while checking room available for hotel id [{HotelId}] from [{FromDate}] to [{ToDate}]",
                 hotelId,
                 from,
                 to);
@@ -83,7 +83,7 @@ public class BookingService(
         catch (Exception e)
         {
             logger.LogError(
-                "Encounter an error while retrieving booking for [{BookingId}]",
+                "Encountered an error while retrieving booking for [{BookingId}]",
                 id);
 
             throw new ApiException(HttpStatusCode.InternalServerError, e.Message);
@@ -126,7 +126,7 @@ public class BookingService(
         catch (Exception e)
         {
             logger.LogError(
-                "Encounter an error while trying to create a new booking for request [{@BookingRequest}]",
+                "Encountered an error while trying to create a new booking for request [{@BookingRequest}]",
                 request);
 
             throw new ApiException(HttpStatusCode.InternalServerError, e.Message);

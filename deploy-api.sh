@@ -1,0 +1,1 @@
+docker compose -f WaracleBooking/docker-compose.yml up -d

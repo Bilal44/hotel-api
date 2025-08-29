@@ -34,7 +34,7 @@ namespace WaracleBooking.Tests.Services
                 _roomRepository,
                 _bookingRepository,
                 A.Fake<IDateTimeSource>(),
-                A.Fake<ILogger<IBookingService>>());
+                A.Fake<ILogger<BookingService>>());
         }
 
         [Theory]

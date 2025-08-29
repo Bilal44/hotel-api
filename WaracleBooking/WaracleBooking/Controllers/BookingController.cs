@@ -23,7 +23,7 @@ public class BookingController(IBookingService bookingService) : ControllerBase
     /// <returns>
     /// Returns an <see cref="OkObjectResult"/> containing the booking if found; otherwise, a <see cref="NotFoundResult"/>.
     /// </returns>
-    [ProducesResponseType(typeof(BookingResponse),Status201Created)]
+    [ProducesResponseType(typeof(BookingResponse), Status200OK)]
     [ProducesResponseType(Status404NotFound)]
     [ProducesResponseType(Status500InternalServerError)]
     [HttpGet("{id:guid}")]
