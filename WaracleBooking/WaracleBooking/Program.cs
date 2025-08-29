@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -48,6 +49,9 @@ public class Program
                 Title = "Waracle Booking API",
                 Description = "An .NET 8 API facilitating hotel inquiry and room booking for Waracle tech task.",
             });
+            
+             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+             options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
 
         var app = builder.Build();
