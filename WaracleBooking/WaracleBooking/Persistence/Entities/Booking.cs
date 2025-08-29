@@ -9,6 +9,8 @@ public class Booking
 {
     [Key]
     public Guid Id { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public string GuestNames { get; set; }
     public DateOnly CheckIn { get; set; }
     public DateOnly CheckOut { get; set; }

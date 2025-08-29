@@ -3,6 +3,7 @@ using System.Net;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using WaracleBooking.Common;
 using WaracleBooking.Exceptions;
 using WaracleBooking.Models.Domain.Booking.RequestModels;
 using WaracleBooking.Persistence.Entities.Enums;
@@ -32,6 +33,7 @@ namespace WaracleBooking.Tests.Services
                 _hotelRepository,
                 _roomRepository,
                 _bookingRepository,
+                A.Fake<IDateTimeSource>(),
                 A.Fake<ILogger<IBookingService>>());
         }
 

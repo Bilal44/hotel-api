@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using WaracleBooking.Common;
 using WaracleBooking.Filters;
 using WaracleBooking.Persistence.Context;
 using WaracleBooking.Persistence.Repositories;
@@ -28,6 +29,7 @@ public class Program
             .AddScoped<IBookingRepository, BookingRepository>()
             .AddScoped<IDataRepository, DataRepository>()
             .AddScoped<IBookingService, BookingService>()
+            .AddSingleton<IDateTimeSource, DateTimeSource>()
             .AddScoped<ApiExceptionFilter>();
 
         builder.Services.AddControllers(options =>

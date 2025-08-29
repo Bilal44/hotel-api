@@ -18,6 +18,8 @@ namespace WaracleBooking.Tests.Mapping
             var booking = new Booking
             {
                 Id = Guid.NewGuid(),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now.AddSeconds(10),
                 GuestNames = "John Doe",
                 NumberOfGuests = 2,
                 CheckIn = new DateOnly(2024, 1, 15),
@@ -30,6 +32,7 @@ namespace WaracleBooking.Tests.Mapping
 
             // Assert
             result.Id.Should().Be(booking.Id);
+            result.BookingTime.Should().Be(booking.CreatedAt);
             result.GuestNames.Should().Be(booking.GuestNames);
             result.NumberOfGuests.Should().Be(booking.NumberOfGuests);
             result.CheckIn.Should().Be(booking.CheckIn); 

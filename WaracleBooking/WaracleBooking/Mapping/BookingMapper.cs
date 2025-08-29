@@ -14,6 +14,7 @@ public static class BookingMapper
         new BookingResponse
         {
             Id = booking.Id,
+            BookingTime = booking.CreatedAt,
             GuestNames = booking.GuestNames,
             NumberOfGuests = booking.NumberOfGuests,
             CheckIn = booking.CheckIn,

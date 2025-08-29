@@ -6,6 +6,7 @@ namespace WaracleBooking.Models.Domain.Booking.ResponseModels;
 public record BookingResponse
 {
     public Guid Id { get; init; }
+    public DateTime BookingTime { get; init; }
     public string GuestNames { get; init; }
     public DateOnly CheckIn { get; init; }
     public DateOnly CheckOut { get; init; }

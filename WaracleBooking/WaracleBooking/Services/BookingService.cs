@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using WaracleBooking.Common;
 using WaracleBooking.Exceptions;
 using WaracleBooking.Models.Domain.Booking;
 using WaracleBooking.Models.Domain.Booking.RequestModels;
@@ -16,6 +17,7 @@ public class BookingService(
     IHotelRepository hotelRepository,
     IRoomRepository roomRepository,
     IBookingRepository bookingRepository,
+    IDateTimeSource dateTimeSource,
     ILogger<IBookingService> logger) : IBookingService
 {
     public async Task<List<Hotel>> GetHotelsByNameAsync(string? name, CancellationToken cancellationToken)
@@ -25,8 +27,7 @@ public class BookingService(
             return await hotelRepository.FilterByAsync(h =>
                     string.IsNullOrWhiteSpace(name) ||
                     h.Name.Contains(name.Trim(), StringComparison.CurrentCultureIgnoreCase),
-                    //EF.Functions.Like(h.Name, $"%{name.Trim()}%"),
-                cancellationToken);;
+                cancellationToken);
         }
         catch (Exception e)
         {
@@ -103,6 +104,7 @@ public class BookingService(
             var booking = new Booking
             {
                 RoomId = room.Id,
+                CreatedAt = dateTimeSource.UtcNow,
                 GuestNames = request.GuestNames,
                 CheckIn = request.From,
                 CheckOut = request.To,
@@ -115,6 +117,7 @@ public class BookingService(
             // Payment logic and additional calls to external APIs
 
             booking.Status = BookingStatus.Success;
+            booking.UpdatedAt = dateTimeSource.UtcNow;
             await bookingRepository.UpdateAsync(booking);
 
             return BookingValidationResult.Pass(booking);
