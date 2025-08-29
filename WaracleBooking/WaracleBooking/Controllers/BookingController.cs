@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using WaracleBooking.Filters;
 using WaracleBooking.Mapping;
 using WaracleBooking.Models.Domain.Booking.RequestModels;
+using WaracleBooking.Models.Domain.Booking.ResponseModels;
 using WaracleBooking.Services.Interfaces;
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace WaracleBooking.Controllers;
 
@@ -28,6 +30,9 @@ public class BookingController : ControllerBase
     /// <returns>
     /// Returns an <see cref="OkObjectResult"/> containing the booking if found; otherwise, a <see cref="NotFoundResult"/>.
     /// </returns>
+    [ProducesResponseType(typeof(BookingResponse),Status201Created)]
+    [ProducesResponseType(Status404NotFound)]
+    [ProducesResponseType(Status500InternalServerError)]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBooking(Guid id)
     {
@@ -47,6 +52,9 @@ public class BookingController : ControllerBase
     /// Returns a <see cref="CreatedResult"/> with the newly created booking if successful; 
     /// otherwise, a <see cref="BadRequestObjectResult"/> with appropriate validation error.
     /// </returns>
+    [ProducesResponseType(typeof(BookingResponse), Status201Created)]
+    [ProducesResponseType(Status400BadRequest)]
+    [ProducesResponseType(Status500InternalServerError)]
     [HttpPost]
     public async Task<IActionResult> CreateBooking(BookingRequest request)
     {
