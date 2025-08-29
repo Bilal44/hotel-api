@@ -9,8 +9,15 @@ namespace WaracleBooking.Controllers;
 [Route("api/data")]
 [ServiceFilter(typeof(ApiExceptionFilter))]
 [ApiController]
-public class DataController (IDataRepository dataRepository) : ControllerBase
+public class DataController : ControllerBase
 {
+    private readonly IDataRepository _dataRepository;
+
+    public DataController(IDataRepository dataRepository)
+    {
+        _dataRepository = dataRepository;
+    }
+
     /// <summary>
     /// Seeds the database with initial data for hotels, rooms and bookings.
     /// </summary>
@@ -18,7 +25,7 @@ public class DataController (IDataRepository dataRepository) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SeedData()
     {
-        await dataRepository.SeedData();
+        await _dataRepository.SeedData();
         return Created();
     }
     
@@ -29,7 +36,7 @@ public class DataController (IDataRepository dataRepository) : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> ResetData()
     {
-        await dataRepository.ClearData();
+        await _dataRepository.ClearData();
         return Ok();
     }
 }

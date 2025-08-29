@@ -13,25 +13,39 @@ using Room = WaracleBooking.Persistence.Entities.Room;
 
 namespace WaracleBooking.Services;
 
-public class BookingService(
-    IHotelRepository hotelRepository,
-    IRoomRepository roomRepository,
-    IBookingRepository bookingRepository,
-    IDateTimeSource dateTimeSource,
-    ILogger<IBookingService> logger) : IBookingService
+public class BookingService : IBookingService
 {
+    private readonly IHotelRepository _hotelRepository;
+    private readonly IRoomRepository _roomRepository;
+    private readonly IBookingRepository _bookingRepository;
+    private readonly IDateTimeSource _dateTimeSource;
+    private readonly ILogger<IBookingService> _logger;
+
+    public BookingService(IHotelRepository hotelRepository,
+        IRoomRepository roomRepository,
+        IBookingRepository bookingRepository,
+        IDateTimeSource dateTimeSource,
+        ILogger<IBookingService> logger)
+    {
+        _hotelRepository = hotelRepository;
+        _roomRepository = roomRepository;
+        _bookingRepository = bookingRepository;
+        _dateTimeSource = dateTimeSource;
+        _logger = logger;
+    }
+
     public async Task<List<Hotel>> GetHotelsByNameAsync(string? name, CancellationToken cancellationToken)
     {
         try
         {
-            return await hotelRepository.FilterByAsync(h =>
+            return await _hotelRepository.FilterByAsync(h =>
                     string.IsNullOrWhiteSpace(name) ||
                     h.Name.Contains(name.Trim(), StringComparison.CurrentCultureIgnoreCase),
                 cancellationToken);
         }
         catch (Exception e)
         {
-            logger.LogError(
+            _logger.LogError(
                 "Encounter an error while searching for [{name}]",
                 name?.Trim());
 
@@ -48,7 +62,7 @@ public class BookingService(
     {
         try
         {
-            var availableRooms = await roomRepository.FilterByAsync(room =>
+            var availableRooms = await _roomRepository.FilterByAsync(room =>
                 room.HotelId == hotelId &&
                 !room.Bookings.Any(booking =>
                     booking.CheckIn < to &&
@@ -63,7 +77,7 @@ public class BookingService(
         }
         catch (Exception e)
         {
-            logger.LogError(
+            _logger.LogError(
                 "Encounter an error while checking room available for hotel id [{HotelId}] from [{FromDate}] to [{ToDate}]",
                 hotelId,
                 from,
@@ -77,11 +91,11 @@ public class BookingService(
     {
         try
         {
-            return await bookingRepository.GetByIdAsync(id);
+            return await _bookingRepository.GetByIdAsync(id);
         }
         catch (Exception e)
         {
-            logger.LogError(
+            _logger.LogError(
                 "Encounter an error while retrieving booking for [{BookingId}]",
                 id);
 
@@ -93,7 +107,7 @@ public class BookingService(
     {
         try
         {
-            var room = await roomRepository.GetByIdAsync(request.RoomId);
+            var room = await _roomRepository.GetByIdAsync(request.RoomId);
             if (room == null)
                 return BookingValidationResult.Fail("Room not found.");
 
@@ -104,7 +118,7 @@ public class BookingService(
             var booking = new Booking
             {
                 RoomId = room.Id,
-                CreatedAt = dateTimeSource.UtcNow,
+                CreatedAt = _dateTimeSource.UtcNow,
                 GuestNames = request.GuestNames,
                 CheckIn = request.From,
                 CheckOut = request.To,
@@ -112,19 +126,19 @@ public class BookingService(
                 Status = BookingStatus.Pending
             };
             room.Bookings.Add(booking);
-            await bookingRepository.AddAsync(booking);
+            await _bookingRepository.AddAsync(booking);
 
             // Payment logic and additional calls to external APIs
 
             booking.Status = BookingStatus.Success;
-            booking.UpdatedAt = dateTimeSource.UtcNow;
-            await bookingRepository.UpdateAsync(booking);
+            booking.UpdatedAt = _dateTimeSource.UtcNow;
+            await _bookingRepository.UpdateAsync(booking);
 
             return BookingValidationResult.Pass(booking);
         }
         catch (Exception e)
         {
-            logger.LogError(
+            _logger.LogError(
                 "Encounter an error while trying to create a new booking for request [{@BookingRequest}]",
                 request);
 
