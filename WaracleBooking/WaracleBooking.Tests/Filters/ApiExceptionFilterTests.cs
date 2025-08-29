@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Routing;
 using System.Net;
-using Exception = System.Exception;
 
 namespace WaracleBooking.Tests.Filters
 {

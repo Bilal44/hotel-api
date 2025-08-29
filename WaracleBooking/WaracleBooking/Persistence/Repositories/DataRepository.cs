@@ -20,14 +20,14 @@ public class DataRepository(BookingDbContext dbContext) : IDataRepository
                 new Room { Id = 1, Type = RoomType.Single, Capacity = 1, HotelId = 1 },
                 new Room { Id = 2, Type = RoomType.Double, Capacity = 2, HotelId = 1 },
                 new Room { Id = 3, Type = RoomType.Double, Capacity = 2, HotelId = 1 },
-                new Room { Id = 4, Type = RoomType.Deluxe, Capacity = 4, HotelId = 1 },
-                new Room { Id = 5, Type = RoomType.Deluxe, Capacity = 4, HotelId = 1 },
+                new Room { Id = 4, Type = RoomType.Deluxe, Capacity = 2, HotelId = 1 },
+                new Room { Id = 5, Type = RoomType.Deluxe, Capacity = 2, HotelId = 1 },
                 new Room { Id = 6, Type = RoomType.Single, Capacity = 1, HotelId = 1 },
                 new Room { Id = 7, Type = RoomType.Single, Capacity = 1, HotelId = 2 },
                 new Room { Id = 8, Type = RoomType.Double, Capacity = 2, HotelId = 2 },
                 new Room { Id = 9, Type = RoomType.Double, Capacity = 2, HotelId = 2 },
-                new Room { Id = 10, Type = RoomType.Deluxe, Capacity = 4, HotelId = 2 },
-                new Room { Id = 11, Type = RoomType.Deluxe, Capacity = 4, HotelId = 2 },
+                new Room { Id = 10, Type = RoomType.Deluxe, Capacity = 2, HotelId = 2 },
+                new Room { Id = 11, Type = RoomType.Deluxe, Capacity = 2, HotelId = 2 },
                 new Room { Id = 12, Type = RoomType.Single, Capacity = 1, HotelId = 2 }
             );
 

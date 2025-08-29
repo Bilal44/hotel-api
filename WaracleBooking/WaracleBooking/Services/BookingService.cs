@@ -7,9 +7,7 @@ using WaracleBooking.Models.Domain.Booking.Validators;
 using WaracleBooking.Persistence.Entities.Enums;
 using WaracleBooking.Persistence.Repositories.Interfaces;
 using WaracleBooking.Services.Interfaces;
-using Booking = WaracleBooking.Persistence.Entities.Booking;
-using Hotel = WaracleBooking.Persistence.Entities.Hotel;
-using Room = WaracleBooking.Persistence.Entities.Room;
+using WaracleBooking.Persistence.Entities;
 
 namespace WaracleBooking.Services;
 

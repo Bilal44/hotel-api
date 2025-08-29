@@ -9,10 +9,7 @@ using WaracleBooking.Models.Domain.Booking.RequestModels;
 using WaracleBooking.Persistence.Entities.Enums;
 using WaracleBooking.Persistence.Repositories.Interfaces;
 using WaracleBooking.Services;
-using WaracleBooking.Services.Interfaces;
-using Booking = WaracleBooking.Persistence.Entities.Booking;
-using Hotel = WaracleBooking.Persistence.Entities.Hotel;
-using Room = WaracleBooking.Persistence.Entities.Room;
+using WaracleBooking.Persistence.Entities;
 
 namespace WaracleBooking.Tests.Services
 {
@@ -284,6 +281,11 @@ namespace WaracleBooking.Tests.Services
             // Assert
             await act.Should().ThrowAsync<ApiException>()
                 .Where(e => e.StatusCode == HttpStatusCode.InternalServerError);
+            
+            A.CallTo(() => _bookingRepository.AddAsync(A<Booking>._))
+                .MustNotHaveHappened();
+            A.CallTo(() => _bookingRepository.UpdateAsync(A<Booking>._))
+                .MustNotHaveHappened();
         }
         
         public static IEnumerable<object[]> HotelSearchTestCases =>

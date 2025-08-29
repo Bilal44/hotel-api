@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WaracleBooking.Persistence.Entities;
-using WaracleBooking.Persistence.Entities.Enums;
 
 namespace WaracleBooking.Persistence.Context;
 

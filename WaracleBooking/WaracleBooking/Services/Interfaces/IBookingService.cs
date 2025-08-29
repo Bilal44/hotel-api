@@ -1,8 +1,6 @@
 ﻿using WaracleBooking.Models.Domain.Booking;
 using WaracleBooking.Models.Domain.Booking.RequestModels;
 using WaracleBooking.Persistence.Entities;
-using Hotel = WaracleBooking.Persistence.Entities.Hotel;
-using Room = WaracleBooking.Persistence.Entities.Room;
 
 namespace WaracleBooking.Services.Interfaces;
 

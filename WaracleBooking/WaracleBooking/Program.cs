@@ -49,7 +49,7 @@ public class Program
             {
                 Version = "v1",
                 Title = "Waracle Booking API",
-                Description = "An .NET 8 API facilitating hotel inquiry and room booking for Waracle tech task.",
+                Description = "A RESTful .NET 8 API facilitating hotel inquiry and room booking for Waracle tech task.",
             });
             
              var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

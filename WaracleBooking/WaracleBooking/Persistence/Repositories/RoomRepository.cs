@@ -12,7 +12,7 @@ public class RoomRepository(BookingDbContext dbContext) : IRoomRepository
     {
         return await dbContext.Rooms
             .Include(r => r.Bookings)
-            .FirstOrDefaultAsync(h => h.Id == id);
+            .FirstOrDefaultAsync(r => r.Id == id);
     }
     
     public async Task<List<Room>> FilterByAsync(
@@ -20,6 +20,6 @@ public class RoomRepository(BookingDbContext dbContext) : IRoomRepository
         CancellationToken cancellationToken) =>
         await dbContext.Rooms
             .Where(predicate)
-            .Include(h => h.Bookings)
+            .Include(r => r.Bookings)
             .ToListAsync(cancellationToken);
 }

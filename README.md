@@ -1,4 +1,4 @@
-[![WaracleBooking API Deployed on Azure Web App](https://github.com/Bilal44/hotel-api/actions/workflows/waraclebooking.yml/badge.svg)](https://github.com/Bilal44/hotel-api/actions/workflows/waraclebooking.yml)
+[![WaracleBooking API Deployment on Azure App Service](https://github.com/Bilal44/hotel-api/actions/workflows/waraclebooking.yml/badge.svg)](https://github.com/Bilal44/hotel-api/actions/workflows/waraclebooking.yml)
 
 # Waracle Booking API
 
@@ -8,7 +8,6 @@ The Waracle Booking API provides endpoints for searching hotels, finding availab
 
 ## Table of Contents
 
-- [Overview](#overview)
 - [API](#api)
   - [Dependencies](#api-dependencies)
   - [Installation](#api-installation)
@@ -19,9 +18,7 @@ The Waracle Booking API provides endpoints for searching hotels, finding availab
 - [Design Decisions](#design-decisions)
 - [Dockerisation](#dockerisation)
 
-## Overview
-
-### API
+## API
 
 The RESTful API is built in C# (.NET 8) using Web API framework to provide booking management functionality. It allows users to retrieve hotels by name, check room availability in a hotel and then proceed to book and retrieve the booking. The API uses an in-memory database to complete the requests, which can be seeded and reset on demand.
 
@@ -34,7 +31,7 @@ The RESTful API is built in C# (.NET 8) using Web API framework to provide booki
 The following are necessary to build and run the project:
 
 - Visual Studio 2022/Rider/VSCode etc.
-- .NET Core SDK 8.0 or later
+- .NET SDK 8.0 or later
 - Entity Framework Core for database abstraction
 - Microsoft InMemory Database for persistence
 - Swashbuckle for Swagger/OpenAPI docs
@@ -43,7 +40,7 @@ The following are necessary to build and run the project:
 - FakeItEasy for stubbing dependencies
 - Visual Studio Tools for Containers for running containerised service via Visual Studio 2022
 
-Ensure that you have the required dependencies installed before proceeding with the installation.
+Please ensure that you have the required dependencies installed before proceeding with the API installation.
 
 ### API Installation
 
@@ -77,13 +74,13 @@ The API will start and requests can be sent to https://localhost:7164 (or https:
 
 ### API Usage
 
-Once the API is running, you can interact with it using API clients such as Postman or cURL. The API exposes the following endpoints for managing hotels, rooms and bookings:
+Once the API is running, you can interact with it using API clients such as Postman or cURL. The API exposes the following endpoints for managing hotels, rooms, bookings and data:
 
 #### Endpoints
 
 `GET /api/hotels?name={name}`: Filters hotels by name, it is case-insensitive and allows partial matching. If no name is provided, it returns all hotels.
 
-`GET /api/hotels/{id}/rooms`: Returns available rooms based on hotel ID, date range and guest count.
+`GET /api/hotels/{id}/rooms`: Returns available rooms based on the hotel ID, date range and guest count.
 
 `POST /api/bookings`: Creates a new booking based on the selected hotel, guest details and room availability.
 
@@ -113,16 +110,16 @@ I have taken some liberty with the design:
 
 - I'm using in-memory database for easier cloud deployment, Azure charges for database hosting after the first year trial. It can be switched to a real database locally in a couple of minutes.
 - The hotel name also allows partial matching and is case-insensitive for a better UX. If no name is provided, the same endpoint will return all hotels.
-- Since the project brief mentioned _"night"_, the same-day check-in and check-out is deemed invalid. In a similar vein as real hotels, the assumption here is that there is an ample gap between person 1 checking out and person 2 checking in the same room. Therefore, it is possible for person 1 to book a room for 3rd-5th and person 2 to book 5th-6th as _"night"_ counting is the key here.
+- Since the project brief mentioned ___night___, the same-day check-in and check-out is deemed invalid. In a similar vein as real hotels, the assumption here is that there is an ample gap between person 1 checking out and person 2 checking in the same room. Therefore, it is possible for person 1 to book a room for 3rd-5th and person 2 to book 5th-6th as ___avoiding overlapping nights___  is the key here.
 - The room availability is pre-filtered by the hotel ID in the route, although other approaches are also valid.
 - The room IDs are globally unique and do not require hotelId + roomId composite key.
 - Technically, the room type and capacity should be in a different table if we religiously follow normalisation. But with only three types, I've added additional validation and kept them in the same table to save an unnecessary join.
-- I picked `GUID` for booking reference since it was especially mentioned to be unique at all times. An `int` can also work and is better for large table scans, especially if it becomes a foreign key.
+- I picked `GUID` for booking reference since it was especially mentioned to be unique at all times and it doubles as the primary key. An `int` can also work and is better for large table scans, especially if it becomes a foreign key. It'd make sense to manually generate a short unique booking number and index it in the db in that case.
 - I have mitigated simultaneous booking with a `Pending` status, although it probably won't deal with sub-second race conditions very well.
 
 ## Dockerisation
 
-Both API and Client support containerised deployments through Docker and Docker Compose. There are no prerequisites, libraries or dependencies required in order to run the containerised api apart from having Docker and Docker Compose installed on your system (and Git Bash if using Windows).
+The API supports containerised deployments through Docker and Docker Compose. There are no prerequisites, libraries or dependencies required in order to run the containerised API apart from having Docker and Docker Compose installed on your system (and Git Bash if using Windows).
 
 ### Deployment
 

@@ -1,4 +1,4 @@
-name: WaracleBooking API Deployed on Azure Web App
+name: WaracleBooking API Deployment on Azure App Service
 on:
   push:
     branches:
