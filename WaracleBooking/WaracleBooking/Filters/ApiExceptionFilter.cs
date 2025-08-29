@@ -5,15 +5,8 @@ using WaracleBooking.Exceptions;
 
 namespace WaracleBooking.Filters;
 
-public class ApiExceptionFilter : IExceptionFilter
+public class ApiExceptionFilter(ILogger<ApiExceptionFilter> logger) : IExceptionFilter
 {
-    private readonly ILogger<ApiExceptionFilter> _logger;
-
-    public ApiExceptionFilter(ILogger<ApiExceptionFilter> logger)
-    {
-        _logger = logger;
-    }
-
     public void OnException(ExceptionContext context)
     {
         var controllerName = (string)context.RouteData.Values["controller"]!;
@@ -21,7 +14,7 @@ public class ApiExceptionFilter : IExceptionFilter
 
         context.ExceptionHandled = true;
 
-        _logger.LogError(
+        logger.LogError(
             context.Exception,
             "An exception occurred handling the response for Controller [{controllerName}] " +
             "executing Action [{actionName}]",

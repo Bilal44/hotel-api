@@ -13,15 +13,8 @@ namespace WaracleBooking.Controllers;
 [Route("api/hotels")]
 [ServiceFilter(typeof(ApiExceptionFilter))]
 [ApiController]
-public class HotelController : ControllerBase
+public class HotelController(IBookingService bookingService) : ControllerBase
 {
-    private readonly IBookingService _bookingService;
-
-    public HotelController(IBookingService bookingService)
-    {
-        _bookingService = bookingService;
-    }
-
     /// <summary>
     /// Retrieves hotels that fully or partially match the specified name.
     /// The name matching is case-insensitive.
@@ -38,7 +31,7 @@ public class HotelController : ControllerBase
     public async Task<IActionResult> GetHotelByName(
         [FromQuery] string? name,
         CancellationToken cancellationToken) =>
-          Ok(BookingMapper.MapToHotels(await _bookingService.GetHotelsByNameAsync(name, cancellationToken)));
+          Ok(BookingMapper.MapToHotels(await bookingService.GetHotelsByNameAsync(name, cancellationToken)));
     
     /// <summary>
     /// Retrieves available rooms for a hotel within a specified date range and guest count.
@@ -65,6 +58,6 @@ public class HotelController : ControllerBase
             return BadRequest(error);
         
         return Ok(BookingMapper.MapToRooms(
-            await _bookingService.GetAvailableRoomsAsync(id, from, to, numberOfGuests, cancellationToken)));
+            await bookingService.GetAvailableRoomsAsync(id, from, to, numberOfGuests, cancellationToken)));
     }
 }

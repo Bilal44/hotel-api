@@ -11,18 +11,11 @@ using BookingStatus = WaracleBooking.Persistence.Entities.Enums.BookingStatus;
 
 namespace WaracleBooking.Tests.IntegrationTests;
 
-public class BookingController : IClassFixture<TestDbFactory>
+public class BookingController(TestDbFactory factory) : IClassFixture<TestDbFactory>
 {
-    private readonly TestDbFactory _factory;
-    private readonly BookingDbContext _dbContext;
-    private readonly HttpClient _client;
-
-    public BookingController(TestDbFactory factory)
-    {
-        _factory = factory;
-        _dbContext = factory.BookingDbContext;
-        _client = factory.CreateClient();
-    }
+    private readonly TestDbFactory _factory = factory;
+    private readonly BookingDbContext _dbContext = factory.BookingDbContext;
+    private readonly HttpClient _client = factory.CreateClient();
 
     [Fact]
     public async Task CreateBooking_WithValidRequest_ReturnsCreated()

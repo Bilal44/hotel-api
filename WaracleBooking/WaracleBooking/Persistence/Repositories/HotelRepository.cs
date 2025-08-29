@@ -6,19 +6,12 @@ using WaracleBooking.Persistence.Repositories.Interfaces;
 
 namespace WaracleBooking.Persistence.Repositories;
 
-public class HotelRepository : IHotelRepository
+public class HotelRepository(BookingDbContext dbContext) : IHotelRepository
 {
-    private readonly BookingDbContext _dbContext;
-
-    public HotelRepository(BookingDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task<List<Hotel>> FilterByAsync(
         Expression<Func<Hotel, bool>> predicate,
         CancellationToken cancellationToken) =>
-        await _dbContext.Hotels
+        await dbContext.Hotels
             .Where(predicate)
             .Include(h => h.Rooms)
             .ToListAsync(cancellationToken);

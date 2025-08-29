@@ -5,25 +5,18 @@ using WaracleBooking.Persistence.Repositories.Interfaces;
 
 namespace WaracleBooking.Persistence.Repositories;
 
-public class DataRepository : IDataRepository
+public class DataRepository(BookingDbContext dbContext) : IDataRepository
 {
-    private readonly BookingDbContext _dbContext;
-
-    public DataRepository(BookingDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task SeedData()
     {
-        if (!_dbContext.Hotels.Any())
+        if (!dbContext.Hotels.Any())
         {
-            _dbContext.Hotels.AddRange(
+            dbContext.Hotels.AddRange(
                 new Hotel { Id = 1, Name = "Waracle Hotel" },
                 new Hotel { Id = 2, Name = "Grand Hotel" }
             );
 
-            _dbContext.Rooms.AddRange(
+            dbContext.Rooms.AddRange(
                 new Room { Id = 1, Type = RoomType.Single, Capacity = 1, HotelId = 1 },
                 new Room { Id = 2, Type = RoomType.Double, Capacity = 2, HotelId = 1 },
                 new Room { Id = 3, Type = RoomType.Double, Capacity = 2, HotelId = 1 },
@@ -38,7 +31,7 @@ public class DataRepository : IDataRepository
                 new Room { Id = 12, Type = RoomType.Single, Capacity = 1, HotelId = 2 }
             );
 
-            _dbContext.Bookings.AddRange(
+            dbContext.Bookings.AddRange(
                 new Booking
                 {
                     Id = new Guid("d2f66cd0-9c8d-4c51-960e-c798c1f357fb"),
@@ -68,16 +61,16 @@ public class DataRepository : IDataRepository
                 }
             );
             
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
     }
 
     public async Task ClearData()
     {
-        _dbContext.Bookings.RemoveRange(_dbContext.Bookings);
-        _dbContext.Rooms.RemoveRange(_dbContext.Rooms);
-        _dbContext.Hotels.RemoveRange(_dbContext.Hotels);
+        dbContext.Bookings.RemoveRange(dbContext.Bookings);
+        dbContext.Rooms.RemoveRange(dbContext.Rooms);
+        dbContext.Hotels.RemoveRange(dbContext.Hotels);
         
-        await _dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
     }
 }

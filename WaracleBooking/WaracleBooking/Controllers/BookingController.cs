@@ -14,15 +14,8 @@ namespace WaracleBooking.Controllers;
 [Route("api/bookings")]
 [ServiceFilter(typeof(ApiExceptionFilter))]
 [ApiController]
-public class BookingController : ControllerBase
+public class BookingController(IBookingService bookingService) : ControllerBase
 {
-    private readonly IBookingService _bookingService;
-
-    public BookingController(IBookingService bookingService)
-    {
-        _bookingService = bookingService;
-    }
-
     /// <summary>
     /// Retrieves a booking by its unique identifier.
     /// </summary>
@@ -36,7 +29,7 @@ public class BookingController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetBooking(Guid id)
     {
-        var booking = await _bookingService.GetBookingByIdAsync(id);
+        var booking = await bookingService.GetBookingByIdAsync(id);
 
         if (booking is null)
             return NotFound();
@@ -58,7 +51,7 @@ public class BookingController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateBooking(BookingRequest request)
     {
-        var bookingResult = await _bookingService.CreateBookingAsync(request);
+        var bookingResult = await bookingService.CreateBookingAsync(request);
         
         if (!bookingResult.Success)
             return BadRequest(bookingResult);
