@@ -102,7 +102,7 @@ namespace WaracleBooking.Tests.Services
 
             result.Should().BeEquivalentTo(expectedResult);
         }
-        
+
         [Fact]
         public async Task GetAvailableRoomsAsync_WhenRepositoryThrows_ThrowsApiException()
         {
@@ -116,14 +116,14 @@ namespace WaracleBooking.Tests.Services
             var act = () => _bookingService.GetAvailableRoomsAsync(1,
                 DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today.AddDays(1)), 2,
                 CancellationToken.None);
-            
+
             // Assert
             await act.Should()
                 .ThrowAsync<ApiException>()
                 .Where(e => e.StatusCode == HttpStatusCode.InternalServerError);
         }
-        
-        
+
+
         [Fact]
         public async Task GetBookingByIdAsync_WithValidId_ReturnsBooking()
         {
@@ -139,7 +139,7 @@ namespace WaracleBooking.Tests.Services
             // Assert
             result.Should().BeEquivalentTo(booking);
         }
-        
+
         [Fact]
         public async Task GetBookingByIdAsync_WithNonExistentId_ReturnsNull()
         {
@@ -154,7 +154,7 @@ namespace WaracleBooking.Tests.Services
             // Assert
             result.Should().BeNull();
         }
-        
+
         [Fact]
         public async Task GetBookingByIdAsync_WhenRepositoryThrows_ThrowsApiException()
         {
@@ -164,25 +164,34 @@ namespace WaracleBooking.Tests.Services
                 .Throws(new Exception());
 
             // Act
-            var act  = async () => await _bookingService.GetBookingByIdAsync(bookingId);
-            
+            var act = async () => await _bookingService.GetBookingByIdAsync(bookingId);
+
             // Assert
             await act.Should().ThrowAsync<ApiException>()
                 .Where(e => e.StatusCode == HttpStatusCode.InternalServerError);
         }
 
-        [Fact]
-        public async Task CreateBookingAsync_WithValidRequest_CreatesBookingSuccessfully()
+        [Theory]
+        [MemberData(nameof(ValidBookingTestCases))]
+        public async Task CreateBookingAsync_WithValidRequest_CreatesBookingSuccessfully(
+            int roomId,
+            BookingRequest request)
         {
             // Arrange
-            var room = new Room { Id = 1, Capacity = 2, Bookings = new List<Booking>() };
-            var request = new BookingRequest
+            var room = new Room
             {
-                RoomId = room.Id,
-                From = DateOnly.FromDateTime(DateTime.Today),
-                To = DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
-                NumberOfGuests = 2,
-                GuestNames = "John Doe"
+                Id = roomId, Capacity = 2, Bookings = new List<Booking>
+                {
+                    new Booking
+                    {
+                        RoomId = 1,
+                        GuestNames = "John Doe",
+                        CheckIn = DateOnly.FromDateTime(DateTime.Today.AddDays(5)),
+                        CheckOut = DateOnly.FromDateTime(DateTime.Today.AddDays(11)),
+                        NumberOfGuests = 2,
+                        Status = BookingStatus.Success
+                    }
+                }
             };
 
             A.CallTo(() => _roomRepository.GetByIdAsync(room.Id))
@@ -200,7 +209,7 @@ namespace WaracleBooking.Tests.Services
             A.CallTo(() => _bookingRepository.UpdateAsync(A<Booking>._))
                 .MustHaveHappenedOnceExactly();
         }
-        
+
         [Fact]
         public async Task CreateBookingAsync_WithConcurrentBookingAttempts_HandlesRaceCondition()
         {
@@ -234,7 +243,7 @@ namespace WaracleBooking.Tests.Services
             A.CallTo(() => _bookingRepository.UpdateAsync(A<Booking>._))
                 .MustHaveHappenedOnceExactly();
         }
-        
+
         [Theory]
         [MemberData(nameof(InvalidBookingTestCases))]
         public async Task CreateBookingAsync_WithInvalidRequest_ReturnsValidationFailure(
@@ -257,7 +266,7 @@ namespace WaracleBooking.Tests.Services
             A.CallTo(() => _bookingRepository.UpdateAsync(A<Booking>._))
                 .MustNotHaveHappened();
         }
-        
+
         [Fact]
         public async Task CreateBookingAsync_WhenRepositoryThrows_ThrowsApiException()
         {
@@ -271,23 +280,23 @@ namespace WaracleBooking.Tests.Services
                 NumberOfGuests = 2,
                 GuestNames = "John Doe"
             };
-            
+
             A.CallTo(() => _bookingRepository.AddAsync(A<Booking>._))
                 .Throws(new Exception());
 
             // Act
-            var act  = async () => await _bookingService.CreateBookingAsync(request);
-            
+            var act = async () => await _bookingService.CreateBookingAsync(request);
+
             // Assert
             await act.Should().ThrowAsync<ApiException>()
                 .Where(e => e.StatusCode == HttpStatusCode.InternalServerError);
-            
+
             A.CallTo(() => _bookingRepository.AddAsync(A<Booking>._))
                 .MustNotHaveHappened();
             A.CallTo(() => _bookingRepository.UpdateAsync(A<Booking>._))
                 .MustNotHaveHappened();
         }
-        
+
         public static IEnumerable<object[]> HotelSearchTestCases =>
             new List<object[]>
             {
@@ -358,7 +367,7 @@ namespace WaracleBooking.Tests.Services
                     }
                 },
 
-                // Exceeding guest count, filters out small rooms
+                // Exceeding guest count, filters out single rooms
                 new object[]
                 {
                     1,
@@ -506,7 +515,7 @@ namespace WaracleBooking.Tests.Services
                     null,
                     "Room not found."
                 },
-                
+
                 // Same day check out
                 new object[]
                 {
@@ -520,7 +529,7 @@ namespace WaracleBooking.Tests.Services
                     new Room { Id = 1, Capacity = 2, Bookings = new List<Booking>() },
                     "`To` date must be after `From` date."
                 },
-                
+
                 // Invalid date range
                 new object[]
                 {
@@ -534,7 +543,7 @@ namespace WaracleBooking.Tests.Services
                     new Room { Id = 1, Capacity = 2, Bookings = new List<Booking>() },
                     "`To` date must be after `From` date."
                 },
-                
+
                 // Invalid guest count
                 new object[]
                 {
@@ -589,6 +598,52 @@ namespace WaracleBooking.Tests.Services
                     },
                     new Room { Id = 1, Capacity = 2, Bookings = new List<Booking>() },
                     "Room can only accommodate 2 guests."
+                }
+            };
+
+        public static IEnumerable<object[]> ValidBookingTestCases =>
+            new List<object[]>
+            {
+                // No overlap with current room bookings
+                new object[]
+                {
+                    1,
+                    new BookingRequest
+                    {
+                        RoomId = 1,
+                        From = DateOnly.FromDateTime(DateTime.Today),
+                        To = DateOnly.FromDateTime(DateTime.Today.AddDays(3)),
+                        NumberOfGuests = 2,
+                        GuestNames = "John Doe"
+                    }
+                },
+                // New booking's check-out date is on the same day
+                // as the check-in date of an existing booking
+                new object[]
+                {
+                    1,
+                    new BookingRequest
+                    {
+                        RoomId = 1,
+                        From = DateOnly.FromDateTime(DateTime.Today.AddDays(3)),
+                        To = DateOnly.FromDateTime(DateTime.Today.AddDays(5)),
+                        NumberOfGuests = 2,
+                        GuestNames = "John Doe"
+                    }
+                },
+                // New booking's check-in day occurs on the same day
+                // as the check-out date of an existing booking
+                new object[]
+                {
+                    1,
+                    new BookingRequest
+                    {
+                        RoomId = 1,
+                        From = DateOnly.FromDateTime(DateTime.Today.AddDays(11)),
+                        To = DateOnly.FromDateTime(DateTime.Today.AddDays(20)),
+                        NumberOfGuests = 2,
+                        GuestNames = "John Doe"
+                    }
                 }
             };
     }

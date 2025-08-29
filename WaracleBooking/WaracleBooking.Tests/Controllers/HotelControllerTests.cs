@@ -120,8 +120,8 @@ namespace WaracleBooking.Tests.Controllers
         {
             // Arrange
             var hotelId = 1;
-            var fromDate = new DateOnly(2024, 1, 1);
-            var toDate = new DateOnly(2024, 1, 5);
+            var fromDate = DateOnly.FromDateTime(DateTime.Today.AddDays(2));
+            var toDate = DateOnly.FromDateTime(DateTime.Today.AddDays(5));
             var numberOfGuests = 0;
 
             // Act

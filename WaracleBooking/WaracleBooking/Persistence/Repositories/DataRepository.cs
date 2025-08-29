@@ -37,27 +37,33 @@ public class DataRepository(BookingDbContext dbContext) : IDataRepository
                     Id = new Guid("d2f66cd0-9c8d-4c51-960e-c798c1f357fb"),
                     RoomId = 6,
                     GuestNames = "B Ahmad",
-                    CheckIn = new DateOnly(2025, 9, 20),
-                    CheckOut = new DateOnly(2025, 9, 22),
-                    NumberOfGuests = 2
+                    CreatedAt = DateTime.UtcNow,
+                    CheckIn = DateOnly.FromDateTime(DateTime.Now.AddDays(2)),
+                    CheckOut = DateOnly.FromDateTime(DateTime.Now.AddDays(3)),
+                    NumberOfGuests = 1,
+                    Status = BookingStatus.Success
                 },
                 new Booking
                 {
                     Id = new Guid("cb7aea26-61e9-4049-b7be-9867b2c24af4"),
                     RoomId = 9,
                     GuestNames = "B Ahmad and Guest 1",
-                    CheckIn = new DateOnly(2025, 9, 25),
-                    CheckOut = new DateOnly(2025, 9, 26),
-                    NumberOfGuests = 2
+                    CreatedAt = DateTime.UtcNow.AddMinutes(2.4),
+                    CheckIn = DateOnly.FromDateTime(DateTime.Now.AddDays(10)),
+                    CheckOut = DateOnly.FromDateTime(DateTime.Now.AddDays(18)),
+                    NumberOfGuests = 2,
+                    Status = BookingStatus.Success
                 },
                 new Booking
                 {
                     Id = new Guid("aebbf84d-bd61-4a8a-b8d7-a360e3d9c39c"),
                     RoomId = 10,
-                    GuestNames = "B Ahmad, Guest 1, Guest 2",
-                    CheckIn = new DateOnly(2025, 9, 29),
-                    CheckOut = new DateOnly(2025, 10, 20),
-                    NumberOfGuests = 2
+                    GuestNames = "B Ahmad and Guest 2",
+                    CreatedAt = DateTime.UtcNow.AddMinutes(7.2),
+                    CheckIn = DateOnly.FromDateTime(DateTime.Now.AddDays(25)),
+                    CheckOut = DateOnly.FromDateTime(DateTime.Now.AddDays(45)),
+                    NumberOfGuests = 2,
+                    Status = BookingStatus.Success
                 }
             );
             

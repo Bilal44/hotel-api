@@ -47,18 +47,26 @@ public class BookingService(
     {
         try
         {
-            var availableRooms = await roomRepository.FilterByAsync(room =>
+            /*
+             Only retrieve rooms that:
+             1- Belong to the hotel
+             2- Can accommodate the specified number of guests
+             3- Have no `Pending` or `Successful` overlapping booking
+             
+             A booking's check-in date can occur on the same day
+                as the check-out date of another one
+                (e.g.  booking 1 = 25 Jan in -> 28 Jan out is valid if
+                existing booking = 22 Jan in -> 25 Jan out)
+             */
+            return await roomRepository.FilterByAsync(room =>
                 room.HotelId == hotelId &&
+                room.Capacity >= numberOfGuests &&
                 !room.Bookings.Any(booking =>
                     booking.CheckIn < to &&
-                    booking.CheckOut >= from &&
+                    booking.CheckOut > from &&
                     (booking.Status == BookingStatus.Success ||
                      booking.Status == BookingStatus.Pending)),
                 cancellationToken);
-
-            return availableRooms
-                .Where(r => r.Capacity >= numberOfGuests)
-                .ToList();
         }
         catch (Exception e)
         {
@@ -140,7 +148,7 @@ public class BookingService(
         var isBooked = room.Bookings.Any(b =>
             b.RoomId == request.RoomId &&
             b.CheckIn < request.To &&
-            b.CheckOut >= request.From &&
+            b.CheckOut > request.From &&
             b.Status is BookingStatus.Success or BookingStatus.Pending);
 
         if (isBooked)

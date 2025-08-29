@@ -13,7 +13,6 @@ namespace WaracleBooking.Tests.IntegrationTests;
 
 public class BookingController(TestDbFactory factory) : IClassFixture<TestDbFactory>
 {
-    private readonly TestDbFactory _factory = factory;
     private readonly BookingDbContext _dbContext = factory.BookingDbContext;
     private readonly HttpClient _client = factory.CreateClient();
 
@@ -84,10 +83,8 @@ public class BookingController(TestDbFactory factory) : IClassFixture<TestDbFact
         // Arrange
         var invalidId = Guid.NewGuid();
 
-        using var client = _factory.CreateClient();
-
         // Act
-        var response = await client.GetAsync($"api/bookings/{invalidId}");
+        var response = await _client.GetAsync($"api/bookings/{invalidId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -97,9 +94,9 @@ public class BookingController(TestDbFactory factory) : IClassFixture<TestDbFact
     {
         GuestNames = "John Doe",
         NumberOfGuests = 2,
-        RoomId = 4,
-        From = DateOnly.FromDateTime(DateTime.Now.AddDays(10)),
-        To = DateOnly.FromDateTime(DateTime.Now.AddDays(20)),
+        RoomId = 9,
+        From = DateOnly.FromDateTime(DateTime.Now.AddDays(18)),
+        To = DateOnly.FromDateTime(DateTime.Now.AddDays(19)),
     };
     
     public static IEnumerable<object[]> InvalidBookingRequests()
@@ -145,7 +142,7 @@ public class BookingController(TestDbFactory factory) : IClassFixture<TestDbFact
 
         yield return new object[]
         {
-            baseRequest with { From = DateOnly.FromDateTime(DateTime.Now), To = DateOnly.FromDateTime(DateTime.Now.AddDays(5)), },
+            baseRequest with { From = DateOnly.FromDateTime(DateTime.Now), To = DateOnly.FromDateTime(DateTime.Now.AddDays(5)) },
             "Room is unavailable for the selected dates."
         };
     }

@@ -98,7 +98,7 @@ For detailed information on each endpoint, including request and response format
 
 The API supports unit and integration tests with `xUnit`, `FakeItEasy` and `FluentAssertions`. The tests are located in WaracleBooking.Tests project.
 
-<img width="626" height="437" alt="image" src="https://github.com/user-attachments/assets/075a1c63-18ea-458f-90d7-bb7e194887e2" />
+<img width="1028" height="512" alt="image" src="https://github.com/user-attachments/assets/42ccf588-4e26-406a-9f5c-d7bcc12cabbf" />
 
 ### API Architecture
 
